@@ -73,6 +73,30 @@ class PlantAnalytics {
     });
   }
 
+  // Get analytics for a single plant name and caretaker
+  static getByPlant(caretakerId, plantName) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM plant_analytics
+        WHERE caretaker_id = ? AND plant_name = ?
+        ORDER BY measured_at DESC
+      `;
+
+      console.log('📋 Fetching measurements for plant:', plantName, 'and caretaker:', caretakerId);
+
+      db.execute(query, [caretakerId, plantName], (err, results) => {
+        if (err) {
+          console.error('❌ Database SELECT error:', err);
+          reject(err);
+          return;
+        }
+
+        console.log('✅ Found', results.length, 'measurements for plant:', plantName);
+        resolve(results);
+      });
+    });
+  }
+
   // Check if table exists and has data
   static checkTable() {
     return new Promise((resolve, reject) => {

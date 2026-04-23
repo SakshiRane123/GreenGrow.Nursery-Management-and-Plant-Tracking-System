@@ -1,0 +1,114 @@
+<%- include('../partials/header', { title: plantName + ' Growth Details' }) %>
+<%- include('../partials/navigation', { user: user }) %>
+
+<main class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-seedling me-2"></i><%= plantName %></h1>
+                <p class="text-muted mb-0">Plant-specific measurements and history</p>
+            </div>
+            <a href="/caretaker/growth-tracker" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Tracker
+            </a>
+        </div>
+    </div>
+
+    <% if (measurements && measurements.length > 0) { %>
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted">Latest Height</h6>
+                        <h3><%= measurements[0].height_cm || '-' %> cm</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted">Latest Width</h6>
+                        <h3><%= measurements[0].width_cm || '-' %> cm</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted">Leaves</h6>
+                        <h3><%= measurements[0].leaf_count || '-' %></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted">Condition</h6>
+                        <h3><%= measurements[0].leaf_condition || '-' %></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Measurement History</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Height</th>
+                                <th>Width</th>
+                                <th>Leaves</th>
+                                <th>Stem</th>
+                                <th>Condition</th>
+                                <th>Sunlight</th>
+                                <th>Temp</th>
+                                <th>Humidity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% measurements.forEach(measurement => { %>
+                                <tr>
+                                    <td>
+                                        <% if (measurement.measured_at) { %>
+                                            <%= new Date(measurement.measured_at).toLocaleDateString() %>
+                                            <br>
+                                            <small class="text-muted"><%= new Date(measurement.measured_at).toLocaleTimeString() %></small>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td><%= measurement.height_cm || '-' %> cm</td>
+                                    <td><%= measurement.width_cm || '-' %> cm</td>
+                                    <td><%= measurement.leaf_count || '-' %></td>
+                                    <td><%= measurement.stem_diameter_mm || '-' %> mm</td>
+                                    <td><%= measurement.leaf_condition || '-' %></td>
+                                    <td><%= measurement.sunlight_hours || '-' %> h</td>
+                                    <td><%= measurement.temperature_celsius || '-' %> °C</td>
+                                    <td><%= measurement.humidity_percent || '-' %> %</td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Latest Notes</h5>
+                <p class="mb-0"><%= measurements[0].notes || 'No notes recorded for the latest measurement.' %></p>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="alert alert-warning">
+            No measurement records found for <strong><%= plantName %></strong>.
+        </div>
+    <% } %>
+</main>
+
+<%- include('../partials/footer') %>

@@ -257,11 +257,11 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <button class="btn btn-outline-primary" 
-                                                            onclick="viewMeasurement('<%= measurement.id %>', '<%= measurement.plant_name %>')"
-                                                            title="View Details">
+                                                    <a href="/caretaker/growth-tracker/plant/<%= encodeURIComponent(measurement.plant_name) %>" 
+                                                       class="btn btn-outline-primary"
+                                                       title="View Plant Details">
                                                         <i class="fas fa-eye"></i>
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

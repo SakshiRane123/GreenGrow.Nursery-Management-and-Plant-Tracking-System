@@ -103,4 +103,32 @@ router.get('/caretaker/growth-tracker/add', authenticateSession, authorizeSessio
   }
 });
 
+// GET /caretaker/growth-tracker/plant/:plantName - View measurements for a single plant
+router.get('/caretaker/growth-tracker/plant/:plantName', authenticateSession, authorizeSessionRoles('caretaker'), async (req, res) => {
+  try {
+    const plantName = decodeURIComponent(req.params.plantName);
+    const measurements = await PlantAnalytics.getByPlant(req.session.user.id, plantName);
+
+    if (!measurements || measurements.length === 0) {
+      return res.status(404).render('error', {
+        title: 'Not Found',
+        message: `No measurements found for plant: ${plantName}`
+      });
+    }
+
+    res.render('caretaker/growth-tracker-plant', {
+      title: `${plantName} - Growth Details`,
+      user: req.session.user,
+      plantName: plantName,
+      measurements: measurements
+    });
+  } catch (error) {
+    console.error('❌ Error loading plant growth details:', error);
+    res.status(500).render('error', {
+      title: 'Error',
+      message: 'Error loading plant growth details'
+    });
+  }
+});
+
 module.exports = router;

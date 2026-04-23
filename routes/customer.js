@@ -37,6 +37,35 @@ router.get('/plants', authenticateSession, async (req, res) => {
   }
 });
 
+// View single plant details - WEB PAGE
+router.get('/plants/:plantId', authenticateSession, async (req, res) => {
+  try {
+    if (req.session.user.role !== 'customer') {
+      return res.redirect('/auth/login');
+    }
+
+    const plant = await Plant.findById(req.params.plantId);
+    if (!plant) {
+      return res.status(404).render('error', {
+        title: 'Not Found',
+        message: 'Plant not found'
+      });
+    }
+
+    res.render('customer/plant-details', {
+      title: plant.name,
+      user: req.session.user,
+      plant: plant
+    });
+  } catch (error) {
+    console.error('Plant details error:', error);
+    res.status(500).render('error', {
+      title: 'Error',
+      message: 'Error loading plant details'
+    });
+  }
+});
+
 // View wishlist - WEB PAGE
 router.get('/wishlist', authenticateSession, async (req, res) => {
   try {
