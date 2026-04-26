@@ -15,10 +15,21 @@
                     <form action="/caretaker/growth-tracker/save" method="POST">
                         <!-- Plant Selection -->
                         <div class="mb-3">
-                            <label for="plant_name" class="form-label">Plant Name *</label>
-                            <input type="text" class="form-control" id="plant_name" name="plant_name" required 
-                                   placeholder="Enter plant name (e.g., Mogra Plant, Rose Bush)">
-                            <div class="form-text">Enter the name of the plant you're measuring</div>
+                            <label for="plant_name" class="form-label">Select Plant *</label>
+                            <select class="form-select" id="plant_name" name="plant_name" required>
+                                <option value="">Select a Plant</option>
+                                <% plants.forEach(plant => { %>
+                                    <option value="<%= plant.name %>" data-image="<%= plant.image_url %>"><%= plant.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <!-- Plant Image Display -->
+                        <div class="mb-3">
+                            <label for="plant_image" class="form-label">Plant Image</label>
+                            <div id="plant_image_preview" class="text-center mb-3">
+                                <img id="plant_image" src="<%= plants.length > 0 ? plants[0].image_url : '' %>" alt="Plant Image" class="img-fluid rounded" style="max-height: 200px;">
+                            </div>
                         </div>
 
                         <div class="row">
@@ -185,6 +196,28 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
     });
+});
+
+// Dynamically update the plant image when a plant is selected
+document.addEventListener('DOMContentLoaded', function() {
+    const plantDropdown = document.getElementById('plant_name');
+    const plantImage = document.getElementById('plant_image');
+
+    plantDropdown.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const imageUrl = selectedOption.getAttribute('data-image');
+
+        if (imageUrl) {
+            plantImage.src = imageUrl;
+            plantImage.style.display = 'block'; // Ensure the image is visible
+        } else {
+            plantImage.src = '';
+            plantImage.style.display = 'none'; // Hide the image if no URL is available
+        }
+    });
+
+    // Trigger change event on page load to show the first plant's image
+    plantDropdown.dispatchEvent(new Event('change'));
 });
 </script>
 </main>

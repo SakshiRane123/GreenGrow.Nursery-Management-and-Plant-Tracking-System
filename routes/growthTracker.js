@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const PlantAnalytics = require('../models/PlantAnalytics');
+const Plant = require('../models/Plant');
 const { authenticateSession, authorizeSessionRoles } = require('../middleware/auth');
 
 // Test database connection on startup
@@ -89,9 +90,12 @@ router.get('/caretaker/growth-tracker', authenticateSession, authorizeSessionRol
 // GET /caretaker/growth-tracker/add - Measurement form
 router.get('/caretaker/growth-tracker/add', authenticateSession, authorizeSessionRoles('caretaker'), async (req, res) => {
   try {
+    const plants = await Plant.getAll(); // Fetch all plants with their details, including image_url
+
     res.render('caretaker/growth-tracker-form', {
       title: 'Add Plant Measurement',
       user: req.session.user,
+      plants: plants, // Pass the plant details to the view
       error: req.query.error
     });
   } catch (error) {
