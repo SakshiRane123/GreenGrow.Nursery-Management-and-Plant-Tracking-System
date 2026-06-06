@@ -89,6 +89,7 @@ const login = async (req, res) => {
 
     // Find user
     const user = await User.findByUsername(username);
+    console.log("USER RESULT:", user);
     if (!user) {
       console.log('User not found:', username);
       return res.render('auth/login', {
@@ -97,6 +98,7 @@ const login = async (req, res) => {
         message: { type: 'danger', text: 'Invalid credentials' }
       });
     }
+    console.log("Stored hash:", user.password);
 
     // Verify password
     const isValidPassword = await User.verifyPassword(password, user.password);
@@ -108,6 +110,7 @@ const login = async (req, res) => {
         message: { type: 'danger', text: 'Invalid credentials' }
       });
     }
+    console.log("Password match result:", isValidPassword);
 
     // Generate token
     const token = generateToken(user);
@@ -140,13 +143,19 @@ const login = async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Login error:', error);
-    res.render('auth/login', {
-      title: 'Login',
-      user: null,
-      message: { type: 'danger', text: 'Error during login' }
-    });
-  }
+  console.error("LOGIN ERROR:");
+  console.error(error);
+  console.error(error.stack);
+
+  res.render('auth/login', {
+    title: 'Login',
+    user: null,
+    message: {
+      type: 'danger',
+      text: error.message
+    }
+  });
+}
 };
 
 
